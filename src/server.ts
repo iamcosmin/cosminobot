@@ -2,7 +2,7 @@ const express = require('express')
 
 const server = express();
 
-server.all('/', (req, res) => {
+server.all('/', (req: any, res: any) => {
     res.send('Robotul ruleaza!')
 })
 
@@ -11,7 +11,7 @@ function keepAlive() {
         console.log('Serverul este pregatit de interactiunea cu utilizatorul.')
     })
 }
-export default keepAlive;
+module.exports = keepAlive;
 
 
 // Iată o listă de comenzi pe care o poți folosi.
