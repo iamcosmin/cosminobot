@@ -1,7 +1,6 @@
-"use strict";
-const express = require('express');
+import express from 'express';
 const server = express();
-server.all('/', (req, res) => {
+server.all('/', (_req, res) => {
     res.send('Robotul ruleaza!');
 });
 function keepAlive() {
@@ -9,7 +8,7 @@ function keepAlive() {
         console.log('Serverul este pregatit de interactiunea cu utilizatorul.');
     });
 }
-module.exports = keepAlive;
+export default keepAlive;
 // Iată o listă de comenzi pe care o poți folosi.
 // Notații: (a): doar pentru admini, [a, b]: argumente care pot fi folosite în comandă, any: poate fi folosita si fara argument, (r): necesita răspuns la un mesaj..
 // /roll [dart, basket, football, bowling, slot, any] : trimite un emoji stabilit 
