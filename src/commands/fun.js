@@ -1,4 +1,5 @@
 import { isSuperGroup, repliedMessageExists } from "../functions";
+import ytdl from "ytdl-core";
 export function fun(bot) {
     bot.command('say', ctx => {
         isSuperGroup(ctx, () => {
@@ -53,6 +54,20 @@ export function fun(bot) {
                 }, 3000);
             }
         });
+    });
+    bot.command('dl', (ctx) => {
+        const parameters = ctx.update.message.text.split(' ')[1];
+        if (parameters !== undefined) {
+            const source = ytdl(parameters, {
+                quality: "highest"
+            });
+            ctx.replyWithVideo({
+                source: source,
+            });
+        }
+        else {
+            ctx.reply('Ataseaza un link valid catre un videoclip de pe YouTube.');
+        }
     });
 }
 //# sourceMappingURL=fun.js.map
