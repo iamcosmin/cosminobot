@@ -1,7 +1,7 @@
 export class Strings {
 }
 Strings.supergroupRequired = "Această comandă poate fi executată doar într-un supergrup.";
-Strings.noPermission = "Permisiuni insuficiente.";
+Strings.noPermission = "Chiar vrei sa restrictionezi un administrator? Patetic.";
 Strings.noRepliedMessage = "Nu ai răspuns la niciun mesaj.";
 Strings.adminPrivilege = "Această comandă nu poate fi executată pe alți administratori.";
 Strings.cmds = "Iată o listă de comenzi pe care o poți folosi.a"

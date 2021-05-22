@@ -45,7 +45,9 @@ bot.command('help', (ctx) => {
     } else if (parameter === "fun") {
         ctx.reply('Iata cateva comenzi pentru distractie!\n\
         \n /roll [dart, basket, football, bowling, slot] - Trimite un mini-joc specific acestor parametri.\
-        \n /say [text] - Raspunde la un mesaj cu aceasta comanda iar robotul va raspunde la acelasi mesaj cu textul scris. Robotul va sterge mesajul care initializeaza comanda, dar tine minte ca acest mesaj inca poate fi vazut de administratori in logs.')
+        \n /say [text] - Raspunde la un mesaj cu aceasta comanda iar robotul va raspunde la acelasi mesaj cu textul scris. Robotul va sterge mesajul care initializeaza comanda, dar tine minte ca acest mesaj inca poate fi vazut de administratori in logs.\
+        \n /muteme - Incearca si o sa vezi ce se intampla!\
+        \n /outme - Incearca si o sa vezi ce se intampla!')
     } else {
         ctx.reply('Bine ai venit în centrul de ajutor!' +
             "\nPentru a primi ajutor cu privire la un domeniu, te rog scrie comanda /help, urmata de unul dintre urmatorii parametri:" +
