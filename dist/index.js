@@ -55,6 +55,31 @@ function repliedMessageExists(ctx, result) {
         });
     }
 }
+function returnTimedParameter(command) {
+    const arrayOfCommand = command.split(" ");
+    if (arrayOfCommand !== undefined) {
+        const timeParameter = arrayOfCommand[1];
+        const isMinuted = timeParameter.endsWith('m');
+        const isHoured = timeParameter.endsWith('h');
+        const onlyIntegerOfTimeParameter = parseInt(timeParameter.substring(0, timeParameter.length - 1));
+        if (isMinuted) {
+            const minuteTimeInt = (parseInt(new Date().getTime().toFixed(0)) / 1000 + (onlyIntegerOfTimeParameter * 60)).toString();
+            const minuteTimeFrame = onlyIntegerOfTimeParameter + (onlyIntegerOfTimeParameter === 1 ? 'minut' : 'minute');
+            return [minuteTimeInt, minuteTimeFrame];
+        }
+        else if (isHoured) {
+            const hourTimeInt = (parseInt(new Date().getTime().toFixed(0)) / 1000 + (onlyIntegerOfTimeParameter * 3600)).toString();
+            const hourTimeFrame = onlyIntegerOfTimeParameter + (onlyIntegerOfTimeParameter === 1 ? 'minut' : 'minute');
+            return [hourTimeInt, hourTimeFrame];
+        }
+        else {
+            return undefined;
+        }
+    }
+    else {
+        return undefined;
+    }
+}
 //! Commands
 //? [ /start ]
 bot.start((ctx) => {
@@ -112,7 +137,7 @@ bot.command('roll', (ctx) => {
         });
     }
 });
-//? [ /muscles ]
+//? [ /mucles ]
 bot.command('mucles', (ctx) => {
     isSuperGroup(ctx, async () => {
         const member = await ctx.getChatMember(ctx.from.id);
@@ -120,58 +145,24 @@ bot.command('mucles', (ctx) => {
             repliedMessageExists(ctx, async () => {
                 const replied = await ctx.getChatMember(ctx.message.reply_to_message.from.id);
                 isNotAdmin(ctx, replied, () => {
-                    const parameters = ctx.update.message.text.split(" ")[1];
-                    const rawParameters = parseInt(parameters.substring(0, parameters.length - 1));
-                    if (parameters !== undefined) {
-                        if (parameters.endsWith('h')) {
-                            if (rawParameters !== NaN) {
-                                withChatAction(ctx, () => {
-                                    ctx.restrictChatMember(ctx.message.reply_to_message.from.id, {
-                                        "permissions": {
-                                            "can_send_messages": false,
-                                            "can_send_media_messages": false,
-                                            "can_send_other_messages": false,
-                                            "can_send_polls": false,
-                                            "can_add_web_page_previews": false,
-                                            "can_invite_users": false,
-                                        },
-                                        "until_date": parseInt(new Date().getTime().toFixed(0)) / 1000 + (rawParameters * 3600),
-                                    });
-                                    ctx.reply(ctx.message.reply_to_message.from.first_name + ' nu mai poate vorbi ' + rawParameters + ' ore.');
-                                });
-                            }
-                            else {
-                                withChatAction(ctx, () => {
-                                    ctx.reply('Parametru invalid.');
-                                });
-                            }
-                        }
-                        else if (parameters.endsWith('m')) {
-                            if (rawParameters !== NaN) {
-                                ctx.restrictChatMember(ctx.message.reply_to_message.from.id, {
-                                    "permissions": {
-                                        "can_send_messages": false,
-                                        "can_send_media_messages": false,
-                                        "can_send_other_messages": false,
-                                        "can_send_polls": false,
-                                        "can_add_web_page_previews": false,
-                                        "can_invite_users": false,
-                                    },
-                                    "until_date": parseInt(new Date().getTime().toFixed(0)) / 1000 + (rawParameters * 60),
-                                });
-                                ctx.reply(ctx.message.reply_to_message.from.first_name + ' nu mai poate vorbi ' + rawParameters + ' minute.');
-                            }
-                            else {
-                                withChatAction(ctx, () => {
-                                    ctx.reply('Parametru invalid.');
-                                });
-                            }
-                        }
-                        else {
-                            withChatAction(ctx, () => {
-                                ctx.reply('Parametru invalid.');
+                    const parameters = ctx.update.message.text;
+                    const time = returnTimedParameter(parameters);
+                    if (time !== undefined) {
+                        const [timeInt, timeFrame] = time;
+                        withChatAction(ctx, () => {
+                            ctx.restrictChatMember(ctx.message.reply_to_message.from.id, {
+                                "permissions": {
+                                    "can_send_messages": false,
+                                    "can_send_media_messages": false,
+                                    "can_send_other_messages": false,
+                                    "can_send_polls": false,
+                                    "can_add_web_page_previews": false,
+                                    "can_invite_users": false,
+                                },
+                                "until_date": parseInt(timeInt),
                             });
-                        }
+                            ctx.reply(replied.user.first_name + ' nu mai poate vorbi pentru ' + timeFrame + '.');
+                        });
                     }
                     else {
                         ctx.restrictChatMember(ctx.message.reply_to_message.from.id, {
@@ -184,34 +175,8 @@ bot.command('mucles', (ctx) => {
                                 "can_invite_users": false,
                             },
                         });
-                        ctx.reply(ctx.message.reply_to_message.from.first_name + ' nu mai poate vorbi.');
+                        ctx.reply(replied.user.first_name + ' nu mai poate vorbi.');
                     }
-                });
-            });
-        });
-    });
-});
-//? [ /desmucles ]
-bot.command('desmucles', (ctx) => {
-    isSuperGroup(ctx, async () => {
-        const member = await ctx.getChatMember(ctx.from.id);
-        isAdmin(ctx, member, () => {
-            repliedMessageExists(ctx, async () => {
-                const replied = await ctx.getChatMember(ctx.message.reply_to_message.from.id);
-                isNotAdmin(ctx, replied, () => {
-                    withChatAction(ctx, () => {
-                        ctx.restrictChatMember(ctx.message.reply_to_message.from.id, {
-                            "permissions": {
-                                "can_send_messages": true,
-                                "can_send_media_messages": true,
-                                "can_send_other_messages": true,
-                                "can_send_polls": true,
-                                "can_add_web_page_previews": true,
-                                "can_invite_users": true,
-                            },
-                        });
-                        ctx.reply(ctx.message.reply_to_message.from.first_name + '(' + ctx.message.reply_to_message.from.id + ') ' + 'poate vorbi.');
-                    });
                 });
             });
         });
@@ -337,11 +302,57 @@ bot.command('del', (ctx) => {
         });
     });
 });
-//? [ /pwsh ] 
-bot.command('pwsh', (ctx) => {
-    isSuperGroup(ctx, () => {
-        repliedMessageExists(ctx, () => {
-            ctx.reply(ctx.update.message.date.toString());
+//? [ /out [ 1m, 2h ] ]
+bot.command('out', (ctx) => {
+    isSuperGroup(ctx, async () => {
+        const member = await ctx.getChatMember(ctx.from.id);
+        isAdmin(ctx, member, () => {
+            repliedMessageExists(ctx, async () => {
+                const replied = await ctx.getChatMember(ctx.message.reply_to_message.from.id);
+                isNotAdmin(ctx, replied, () => {
+                    const time = returnTimedParameter(ctx.update.message.text);
+                    if (time !== undefined) {
+                        const [timeInt, timeFrame] = time;
+                        withChatAction(ctx, () => {
+                            ctx.kickChatMember(ctx.message.reply_to_message.from.id, parseInt(timeInt));
+                            ctx.reply(replied.user.first_name + ' a fost dat afară din grup pentru ' + timeFrame + '.');
+                        });
+                    }
+                    else {
+                        withChatAction(ctx, () => {
+                            ctx.kickChatMember(ctx.message.reply_to_message.from.id);
+                            ctx.reply(replied.user.first_name + ' a fost dat afară din grup permanent.');
+                        });
+                    }
+                });
+            });
+        });
+    });
+});
+//? [ /lift ]
+bot.command('lift', ctx => {
+    isSuperGroup(ctx, async () => {
+        const member = await ctx.getChatMember(ctx.from.id);
+        isAdmin(ctx, member, () => {
+            repliedMessageExists(ctx, async () => {
+                const replied = await ctx.getChatMember(ctx.message.reply_to_message.from.id);
+                isNotAdmin(ctx, replied, () => {
+                    withChatAction(ctx, () => {
+                        ctx.restrictChatMember(ctx.message.reply_to_message.from.id, {
+                            "permissions": {
+                                "can_send_messages": true,
+                                "can_send_media_messages": true,
+                                "can_send_other_messages": true,
+                                "can_send_polls": true,
+                                "can_add_web_page_previews": true,
+                                "can_invite_users": true,
+                            },
+                        }),
+                            ctx.unbanChatMember(ctx.message.reply_to_message.from.id, { "only_if_banned": true });
+                        ctx.reply('Drum liber! ' + replied.user.first_name + ' are toate restricțiile ridicate.');
+                    });
+                });
+            });
         });
     });
 });
