@@ -57,19 +57,19 @@ function repliedMessageExists(ctx, result) {
 }
 function returnTimedParameter(command) {
     const arrayOfCommand = command.split(" ");
-    if (arrayOfCommand !== undefined) {
-        const timeParameter = arrayOfCommand[1];
+    const timeParameter = arrayOfCommand[1];
+    if (timeParameter !== undefined) {
         const isMinuted = timeParameter.endsWith('m');
         const isHoured = timeParameter.endsWith('h');
         const onlyIntegerOfTimeParameter = parseInt(timeParameter.substring(0, timeParameter.length - 1));
         if (isMinuted) {
             const minuteTimeInt = (parseInt(new Date().getTime().toFixed(0)) / 1000 + (onlyIntegerOfTimeParameter * 60)).toString();
-            const minuteTimeFrame = onlyIntegerOfTimeParameter + (onlyIntegerOfTimeParameter === 1 ? 'minut' : 'minute');
+            const minuteTimeFrame = onlyIntegerOfTimeParameter + (onlyIntegerOfTimeParameter === 1 ? ' minut' : ' minute');
             return [minuteTimeInt, minuteTimeFrame];
         }
         else if (isHoured) {
             const hourTimeInt = (parseInt(new Date().getTime().toFixed(0)) / 1000 + (onlyIntegerOfTimeParameter * 3600)).toString();
-            const hourTimeFrame = onlyIntegerOfTimeParameter + (onlyIntegerOfTimeParameter === 1 ? 'minut' : 'minute');
+            const hourTimeFrame = onlyIntegerOfTimeParameter + (onlyIntegerOfTimeParameter === 1 ? ' oră' : ' ore');
             return [hourTimeInt, hourTimeFrame];
         }
         else {

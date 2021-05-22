@@ -4,9 +4,8 @@
   "description": "description:",
   "main": "src/index.js",
   "scripts": {
-    "build": "tsc",
-    "prestart": "npm run build",
-    "start": "node -r esm dist/index.js",
+    "prestart": "tsc",
+    "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
