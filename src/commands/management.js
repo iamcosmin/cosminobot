@@ -1,11 +1,11 @@
 import { Strings } from "../strings";
-import { isAdmin, isNotAdmin, isSuperGroup, repliedMessageExists, returnTimedParameter } from '../functions';
+import { AdminPermission, isAllowed, isNotAdmin, isSuperGroup, repliedMessageExists, returnTimedParameter } from '../functions';
 export default function management(bot) {
     //? [ /mute ]
     bot.command('mute', (ctx) => {
         isSuperGroup(ctx, async () => {
             const member = await ctx.getChatMember(ctx.from.id);
-            isAdmin(ctx, member, async () => {
+            if (isAllowed(member, AdminPermission.BAN_USERS)) {
                 repliedMessageExists(ctx, async () => {
                     const replied = await ctx.getChatMember(ctx.message.reply_to_message.from.id);
                     isNotAdmin(ctx, replied, () => {
@@ -41,14 +41,17 @@ export default function management(bot) {
                         }
                     });
                 });
-            });
+            }
+            else {
+                ctx.reply(Strings.cannotRestrict);
+            }
         });
     });
     //? [ /promote ]
     bot.command('promote', async (ctx) => {
         isSuperGroup(ctx, async () => {
             const member = await ctx.getChatMember(ctx.from.id);
-            isAdmin(ctx, member, () => {
+            if (isAllowed(member, AdminPermission.ADD_NEW_ADMINS)) {
                 repliedMessageExists(ctx, async () => {
                     const replied = await ctx.getChatMember(ctx.message.reply_to_message.from.id);
                     isNotAdmin(ctx, replied, () => {
@@ -64,30 +67,33 @@ export default function management(bot) {
                         ctx.reply(ctx.message.reply_to_message.from.first_name + ' a devenit admin.');
                     });
                 });
-            });
+            }
+            else {
+                ctx.reply(Strings.cannotPromote);
+            }
         });
     });
     //? [ /demote ]
     bot.command('demote', (ctx) => {
         isSuperGroup(ctx, async () => {
             const member = await ctx.getChatMember(ctx.from.id);
-            isAdmin(ctx, member, () => {
+            if (isAllowed(member, AdminPermission.ADD_NEW_ADMINS)) {
                 repliedMessageExists(ctx, async () => {
-                    const replied = await ctx.getChatMember(ctx.message.reply_to_message.from.id);
-                    isNotAdmin(ctx, replied, () => {
-                        ctx.promoteChatMember(ctx.message.reply_to_message.from.id, {
-                            "can_change_info": false,
-                            "can_delete_messages": false,
-                            "can_restrict_members": false,
-                            "can_invite_users": false,
-                            "can_pin_messages": false,
-                            "can_manage_voice_chats": false,
-                            "can_promote_members": false,
-                        });
-                        ctx.reply(ctx.message.reply_to_message.from.first_name + ' nu mai este admin.');
+                    ctx.promoteChatMember(ctx.message.reply_to_message.from.id, {
+                        "can_change_info": false,
+                        "can_delete_messages": false,
+                        "can_restrict_members": false,
+                        "can_invite_users": false,
+                        "can_pin_messages": false,
+                        "can_manage_voice_chats": false,
+                        "can_promote_members": false,
                     });
+                    ctx.reply(ctx.message.reply_to_message.from.first_name + ' nu mai este admin.');
                 });
-            });
+            }
+            else {
+                ctx.reply(Strings.cannotPromote);
+            }
         });
     });
     //? [ /prinde ]
@@ -95,9 +101,12 @@ export default function management(bot) {
         isSuperGroup(ctx, () => {
             repliedMessageExists(ctx, async () => {
                 const member = await ctx.getChatMember(ctx.from.id);
-                isAdmin(ctx, member, () => {
+                if (isAllowed(member, AdminPermission.PIN_MESSAGES)) {
                     ctx.pinChatMessage(ctx.message.reply_to_message.message_id);
-                });
+                }
+                else {
+                    ctx.reply(Strings.cannotPin);
+                }
             });
         });
     });
@@ -106,9 +115,12 @@ export default function management(bot) {
         isSuperGroup(ctx, () => {
             repliedMessageExists(ctx, async () => {
                 const member = await ctx.getChatMember(ctx.from.id);
-                isAdmin(ctx, member, () => {
+                if (isAllowed(member, AdminPermission.PIN_MESSAGES)) {
                     ctx.unpinChatMessage(ctx.message.reply_to_message.message_id);
-                });
+                }
+                else {
+                    ctx.reply(Strings.cannotPin);
+                }
             });
         });
     });
@@ -116,7 +128,7 @@ export default function management(bot) {
     bot.command('com', (ctx) => {
         isSuperGroup(ctx, async () => {
             const member = await ctx.getChatMember(ctx.from.id);
-            isAdmin(ctx, member, () => {
+            if (isAllowed(member, AdminPermission.BAN_USERS)) {
                 const parameter = ctx.update.message.text.split(' ')[1];
                 if (parameter === "false") {
                     ctx.setChatPermissions({
@@ -138,7 +150,10 @@ export default function management(bot) {
                 else {
                     ctx.reply('Niciun parametru valid nu a fost specificat.');
                 }
-            });
+            }
+            else {
+                ctx.reply(Strings.cannotRestrict);
+            }
         });
     });
     //? [ /del ]
@@ -146,12 +161,12 @@ export default function management(bot) {
         isSuperGroup(ctx, async () => {
             const member = await ctx.getChatMember(ctx.from.id);
             repliedMessageExists(ctx, () => {
-                if ((member.status === 'creator' || member.status === 'administrator') || ctx.message.reply_to_message.from.id === ctx.from.id) {
+                if (isAllowed(member, AdminPermission.DELETE_MESSAGES) || ctx.message.reply_to_message.from.id === ctx.from.id) {
                     ctx.deleteMessage(ctx.update.message.message_id);
                     ctx.deleteMessage(ctx.message.reply_to_message.message_id);
                 }
                 else {
-                    ctx.reply(Strings.noPermission);
+                    ctx.reply(Strings.cannotDeleteOthersMessages);
                 }
             });
         });
@@ -160,7 +175,7 @@ export default function management(bot) {
     bot.command('lift', ctx => {
         isSuperGroup(ctx, async () => {
             const member = await ctx.getChatMember(ctx.from.id);
-            isAdmin(ctx, member, () => {
+            if (isAllowed(member, AdminPermission.BAN_USERS)) {
                 repliedMessageExists(ctx, async () => {
                     const replied = await ctx.getChatMember(ctx.message.reply_to_message.from.id);
                     isNotAdmin(ctx, replied, () => {
@@ -178,14 +193,17 @@ export default function management(bot) {
                         ctx.reply('Drum liber! ' + replied.user.first_name + ' are toate restricțiile ridicate.');
                     });
                 });
-            });
+            }
+            else {
+                ctx.reply(Strings.cannotRestrict);
+            }
         });
     });
     //? [ /out [ 1m, 2h ] ]
     bot.command('out', (ctx) => {
         isSuperGroup(ctx, async () => {
             const member = await ctx.getChatMember(ctx.from.id);
-            isAdmin(ctx, member, () => {
+            if (isAllowed(member, AdminPermission.BAN_USERS)) {
                 repliedMessageExists(ctx, async () => {
                     const replied = await ctx.getChatMember(ctx.message.reply_to_message.from.id);
                     isNotAdmin(ctx, replied, () => {
@@ -201,7 +219,10 @@ export default function management(bot) {
                         }
                     });
                 });
-            });
+            }
+            else {
+                ctx.reply(Strings.cannotRestrict);
+            }
         });
     });
 }

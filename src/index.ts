@@ -26,6 +26,10 @@ bot.start((ctx) => {
     ctx.reply('Salut! Pentru a vedea ce abilitati am, poti folosi comanda /help!')
 });
 
+// bot.on('new_chat_photo' || 'new_chat_title', (ctx) => {
+
+// })
+
 //? [ /help ]
 bot.command('help', (ctx) => {
     const parameter = parseParameter(ctx);
@@ -82,6 +86,12 @@ bot.command('roll', async (ctx) => {
     } else {
         ctx.replyWithDice()
     }
+})
+
+bot.catch((error, ctx) => {
+    ctx.reply('Eroare!')
+    const err = error as string;
+    ctx.reply(err)
 })
 
 bot.launch();

@@ -1,5 +1,6 @@
 import { isSuperGroup, repliedMessageExists } from "../functions";
 import ytdl from "ytdl-core";
+import fs from 'fs';
 export function fun(bot) {
     bot.command('say', ctx => {
         isSuperGroup(ctx, () => {
@@ -58,11 +59,10 @@ export function fun(bot) {
     bot.command('dl', (ctx) => {
         const parameters = ctx.update.message.text.split(' ')[1];
         if (parameters !== undefined) {
-            const source = ytdl(parameters, {
-                quality: "highest"
-            });
+            ytdl(parameters).pipe(fs.createWriteStream('video.mp4'));
+            ctx.replyWithChatAction("upload_video");
             ctx.replyWithVideo({
-                source: source,
+                source: fs.createReadStream('video.mp4'),
             });
         }
         else {

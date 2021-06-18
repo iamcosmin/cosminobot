@@ -12,6 +12,36 @@ export function isSuperGroup(ctx, result) {
         ctx.reply(Strings.supergroupRequired);
     }
 }
+export function isAllowed(member, expected) {
+    switch (expected) {
+        case AdminPermission.CHANGE_GROUP_INFO:
+            return member.can_change_info === true ? true : false;
+        case AdminPermission.DELETE_MESSAGES:
+            return member.can_delete_messages === true ? true : false;
+        case AdminPermission.BAN_USERS:
+            return member.can_restrict_members === true ? true : false;
+        case AdminPermission.INVITE_USERS_VIA_LINK:
+            return member.can_invite_users === true ? true : false;
+        case AdminPermission.PIN_MESSAGES:
+            return member.can_pin_messages === true ? true : false;
+        case AdminPermission.MANAGE_VOICE_CHATS:
+            return member.can_manage_voice_chats === true ? true : false;
+        case AdminPermission.ADD_NEW_ADMINS:
+            return member.can_promote_members === true ? true : false;
+    }
+    return false;
+}
+export var AdminPermission;
+(function (AdminPermission) {
+    AdminPermission[AdminPermission["CHANGE_GROUP_INFO"] = 0] = "CHANGE_GROUP_INFO";
+    AdminPermission[AdminPermission["DELETE_MESSAGES"] = 1] = "DELETE_MESSAGES";
+    AdminPermission[AdminPermission["BAN_USERS"] = 2] = "BAN_USERS";
+    AdminPermission[AdminPermission["INVITE_USERS_VIA_LINK"] = 3] = "INVITE_USERS_VIA_LINK";
+    AdminPermission[AdminPermission["PIN_MESSAGES"] = 4] = "PIN_MESSAGES";
+    AdminPermission[AdminPermission["MANAGE_VOICE_CHATS"] = 5] = "MANAGE_VOICE_CHATS";
+    AdminPermission[AdminPermission["ADD_NEW_ADMINS"] = 6] = "ADD_NEW_ADMINS";
+    AdminPermission[AdminPermission["REMAIN_ANONYMOUS"] = 7] = "REMAIN_ANONYMOUS";
+})(AdminPermission || (AdminPermission = {}));
 export function administrative(ctx, member, replied, result) {
     if (ctx.chat.type === "supergroup") {
         if (member.status === 'creator' || member.status === 'administrator') {
@@ -35,14 +65,13 @@ export function administrative(ctx, member, replied, result) {
         ctx.reply(Strings.supergroupRequired);
     }
 }
-export function isAdmin(ctx, member, result) {
-    if (member.status === 'creator' || member.status === 'administrator') {
-        result();
-    }
-    else {
-        ctx.reply(Strings.noPermission);
-    }
-}
+// export function isAdmin(ctx: Context, member: ChatMember, result: () => void) {
+//     if (member.status === 'creator' || member.status === 'administrator') {
+//         result()
+//     } else {
+//         ctx.reply(Strings.noPermission)
+//     }
+// }
 export function isNotAdmin(ctx, member, result) {
     if (!(member.status === 'creator' || member.status === 'administrator')) {
         result();
