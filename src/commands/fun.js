@@ -69,5 +69,14 @@ export function fun(bot) {
             ctx.reply('Ataseaza un link valid catre un videoclip de pe YouTube.');
         }
     });
+    //? [ /poll => Nume sondaj => ['Optiunea 1', 'Optiunea 2'] => true ]
+    bot.command('poll', ctx => {
+        isSuperGroup(ctx, () => {
+            const args = ctx.message.text.split(' => ');
+            ctx.replyWithPoll(args[1], Array.from(args[2]), {
+                "is_anonymous": (args[3] === 'true')
+            });
+        });
+    });
 }
 //# sourceMappingURL=fun.js.map

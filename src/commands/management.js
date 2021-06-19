@@ -225,15 +225,15 @@ export default function management(bot) {
             }
         });
     });
-    //? [ /title "params" ]
+    //? [ /titlu "params" ]
     // Note: group name cannot have "" as it may interfere with the command parsing process.
-    bot.command('title', (ctx) => {
+    bot.command('titlu', (ctx) => {
         isSuperGroup(ctx, async () => {
             const member = await ctx.getChatMember(ctx.from.id);
             if (isAllowed(member, AdminPermission.CHANGE_GROUP_INFO)) {
                 const newName = ctx.message.text.split("\"")[1];
                 ctx.setChatTitle(newName);
-                ctx.reply('Numele grupului a fost schimbat în ' + newName);
+                ctx.reply('Numele grupului a fost schimbat în ' + newName + '.');
             }
             else {
                 ctx.reply(Strings.cannotEditGroupInfo);
