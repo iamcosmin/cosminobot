@@ -1,4 +1,5 @@
 import { Telegraf } from 'telegraf';
+import automate from './commands/automatisation';
 import { fun } from './commands/fun';
 import management from './commands/management';
 import { parseParameter } from './functions';
@@ -17,6 +18,7 @@ const bot = new Telegraf(process.env.TOKEN!);
 //////////////////////////////////////////////////////////
 management(bot)
 fun(bot)
+automate(bot)
 
 //////////////////////////////////////////////////////////
 // Regular
@@ -26,10 +28,6 @@ bot.start((ctx) => {
     ctx.reply('Salut! Pentru a vedea ce abilitati am, poti folosi comanda /help!')
 });
 
-bot.on('new_chat_members', ctx => {
-    ctx.reply('Bine ai venit, ' + ctx.from.first_name + '!' + '\n' + 'Conformează-te cu principiile grupului pentru a sta aici cât mai mult!')
-    ctx.deleteMessage(ctx.message.message_id);
-})
 
 //? [ /help ]
 bot.command('help', (ctx) => {
