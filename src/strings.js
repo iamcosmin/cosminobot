@@ -10,6 +10,7 @@ Strings.cannotRestrict = "Nu ai permisiunea de a restricționa membri.";
 Strings.cannotPromote = "Nu ai permisiunea să promovezi sau să retrogradezi administratori.";
 Strings.cannotPin = "Nu ai permisiunea să prinzi sau să desprinzi mesaje.";
 Strings.cannotDeleteOthersMessages = "Nu ai permisiunea să ștergi mesajele altor membri.";
+Strings.cannotEditGroupInfo = "Nu ai permisiunea să editezi informațiile grupului.";
 // /com
 Strings.comEnabled = "Trimiterea de noi mesaje a fost activată pentru membrii grupului.";
 Strings.comDisabled = "Trimiterea de noi mesaje a fost dezactivată pentru membrii grupului.";

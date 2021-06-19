@@ -13,23 +13,27 @@ export function isSuperGroup(ctx, result) {
     }
 }
 export function isAllowed(member, expected) {
-    switch (expected) {
-        case AdminPermission.CHANGE_GROUP_INFO:
-            return member.can_change_info === true ? true : false;
-        case AdminPermission.DELETE_MESSAGES:
-            return member.can_delete_messages === true ? true : false;
-        case AdminPermission.BAN_USERS:
-            return member.can_restrict_members === true ? true : false;
-        case AdminPermission.INVITE_USERS_VIA_LINK:
-            return member.can_invite_users === true ? true : false;
-        case AdminPermission.PIN_MESSAGES:
-            return member.can_pin_messages === true ? true : false;
-        case AdminPermission.MANAGE_VOICE_CHATS:
-            return member.can_manage_voice_chats === true ? true : false;
-        case AdminPermission.ADD_NEW_ADMINS:
-            return member.can_promote_members === true ? true : false;
+    if (member.status == "creator") {
+        return true;
     }
-    return false;
+    else {
+        switch (expected) {
+            case AdminPermission.CHANGE_GROUP_INFO:
+                return member.can_change_info === true ? true : false;
+            case AdminPermission.DELETE_MESSAGES:
+                return member.can_delete_messages === true ? true : false;
+            case AdminPermission.BAN_USERS:
+                return member.can_restrict_members === true ? true : false;
+            case AdminPermission.INVITE_USERS_VIA_LINK:
+                return member.can_invite_users === true ? true : false;
+            case AdminPermission.PIN_MESSAGES:
+                return member.can_pin_messages === true ? true : false;
+            case AdminPermission.MANAGE_VOICE_CHATS:
+                return member.can_manage_voice_chats === true ? true : false;
+            case AdminPermission.ADD_NEW_ADMINS:
+                return member.can_promote_members === true ? true : false;
+        }
+    }
 }
 export var AdminPermission;
 (function (AdminPermission) {

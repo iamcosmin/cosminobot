@@ -134,7 +134,7 @@ export default function management(bot) {
                     ctx.setChatPermissions({
                         "can_send_messages": false
                     });
-                    ctx.reply('Abilitatea de a comunica a fost dezactivată global.');
+                    ctx.reply(Strings.comDisabled);
                 }
                 else if (parameter === "true") {
                     ctx.setChatPermissions({
@@ -145,7 +145,7 @@ export default function management(bot) {
                         "can_add_web_page_previews": true,
                         "can_invite_users": true
                     });
-                    ctx.reply('Abilitatea de a comunica a fost activată.');
+                    ctx.reply(Strings.comEnabled);
                 }
                 else {
                     ctx.reply('Niciun parametru valid nu a fost specificat.');
@@ -222,6 +222,21 @@ export default function management(bot) {
             }
             else {
                 ctx.reply(Strings.cannotRestrict);
+            }
+        });
+    });
+    //? [ /title "params" ]
+    // Note: group name cannot have "" as it may interfere with the command parsing process.
+    bot.command('title', (ctx) => {
+        isSuperGroup(ctx, async () => {
+            const member = await ctx.getChatMember(ctx.from.id);
+            if (isAllowed(member, AdminPermission.CHANGE_GROUP_INFO)) {
+                const newName = ctx.message.text.split("\"")[1];
+                ctx.setChatTitle(newName);
+                ctx.reply('Numele grupului a fost schimbat în ' + newName);
+            }
+            else {
+                ctx.reply(Strings.cannotEditGroupInfo);
             }
         });
     });
