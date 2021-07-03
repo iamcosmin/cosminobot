@@ -55,16 +55,31 @@ export default function management(bot) {
                 repliedMessageExists(ctx, async () => {
                     const replied = await ctx.getChatMember(ctx.message.reply_to_message.from.id);
                     isNotAdmin(ctx, replied, () => {
-                        ctx.promoteChatMember(ctx.message.reply_to_message.from.id, {
-                            "can_change_info": false,
-                            "can_delete_messages": true,
-                            "can_restrict_members": true,
-                            "can_invite_users": true,
-                            "can_pin_messages": true,
-                            "can_manage_voice_chats": true,
-                            "can_promote_members": false,
-                        });
-                        ctx.reply(ctx.message.reply_to_message.from.first_name + ' a devenit admin.');
+                        const parseCommand = ctx.message.text.split(' ')[1];
+                        if (parseCommand === undefined) {
+                            ctx.promoteChatMember(ctx.message.reply_to_message.from.id, {
+                                "can_change_info": false,
+                                "can_delete_messages": true,
+                                "can_restrict_members": true,
+                                "can_invite_users": true,
+                                "can_pin_messages": true,
+                                "can_manage_voice_chats": true,
+                                "can_promote_members": false,
+                            });
+                            ctx.reply(ctx.message.reply_to_message.from.first_name + ' a devenit admin.');
+                        }
+                        else {
+                            ctx.promoteChatMember(ctx.message.reply_to_message.from.id, {
+                                "can_change_info": false,
+                                "can_delete_messages": true,
+                                "can_restrict_members": true,
+                                "can_invite_users": true,
+                                "can_pin_messages": true,
+                                "can_manage_voice_chats": true,
+                                "can_promote_members": false,
+                            });
+                            ctx.setChatAdministratorCustomTitle(ctx.message.reply_to_message.from.id, parseCommand);
+                        }
                     });
                 });
             }
