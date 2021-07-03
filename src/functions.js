@@ -13,7 +13,7 @@ export function isSuperGroup(ctx, result) {
     }
 }
 export function isAllowed(member, expected) {
-    if (member.status == "creator") {
+    if (member.status === "creator") {
         return true;
     }
     else {
