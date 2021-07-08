@@ -79,6 +79,7 @@ export default function management(bot) {
                                 "can_promote_members": false,
                             });
                             ctx.setChatAdministratorCustomTitle(ctx.message.reply_to_message.from.id, parseCommand);
+                            ctx.reply(ctx.message.reply_to_message.from.first_name + ' a devenit admin cu numele ' + parseCommand);
                         }
                     });
                 });
@@ -140,18 +141,18 @@ export default function management(bot) {
         });
     });
     //? [ /com {param} ]
-    bot.command('com', (ctx) => {
+    bot.command('e_1', (ctx) => {
         isSuperGroup(ctx, async () => {
             const member = await ctx.getChatMember(ctx.from.id);
             if (isAllowed(member, AdminPermission.BAN_USERS)) {
                 const parameter = ctx.update.message.text.split(' ')[1];
-                if (parameter === "false") {
+                if (parameter === "off") {
                     ctx.setChatPermissions({
                         "can_send_messages": false
                     });
                     ctx.reply(Strings.comDisabled);
                 }
-                else if (parameter === "true") {
+                else if (parameter === "on") {
                     ctx.setChatPermissions({
                         "can_send_messages": true,
                         "can_send_media_messages": true,
