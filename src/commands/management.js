@@ -256,5 +256,29 @@ export default function management(bot) {
             }
         });
     });
+    // [ /aname "Name"]
+    bot.command('aname', ctx => {
+        isSuperGroup(ctx, async () => {
+            const member = await ctx.getChatMember(ctx.from.id);
+            if (isAllowed(member, AdminPermission.ADD_NEW_ADMINS)) {
+                const parsed = ctx.message.text.split(' ')[1];
+                if (member.status === 'administrator') {
+                    if (parsed === undefined) {
+                        ctx.reply('Nu ai dat niciun argument valid pentru a redenumi administratorul.');
+                    }
+                    else {
+                        ctx.setChatAdministratorCustomTitle(member.user.id, parsed);
+                        ctx.reply(member.user.first_name + 'are acum numele de administrator \"' + parsed + '\".');
+                    }
+                }
+                else {
+                    ctx.reply('Aceasta actiune poate fi efectuata doar pe un administrator existent. Daca doresti sa promovezi pe cineva in rolul de administrator, foloseste comanda /promote.');
+                }
+            }
+            else {
+                ctx.reply(Strings.adminPrivilege);
+            }
+        });
+    });
 }
 //# sourceMappingURL=management.js.map

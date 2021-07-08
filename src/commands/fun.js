@@ -78,5 +78,17 @@ export function fun(bot) {
             });
         });
     });
+    //? [ /flag ]
+    // Raspunde la un mesaj pentru a-l raporta administratorilor
+    bot.command('flag', ctx => {
+        isSuperGroup(ctx, () => {
+            repliedMessageExists(ctx, () => {
+                const whoReported = ctx.message.from;
+                bot.telegram.sendMessage(442675953, 'Atentie! ' + whoReported.first_name + ' a cerut ajutorul in grup.\n' + 'https://t.me/extrapsc/' + ctx.message.reply_to_message.message_id);
+                bot.telegram.forwardMessage(442675953, ctx.chat.id, ctx.message.reply_to_message.message_id);
+                ctx.deleteMessage(ctx.message.message_id);
+            });
+        });
+    });
 }
 //# sourceMappingURL=fun.js.map
